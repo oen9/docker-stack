@@ -40,3 +40,30 @@ services:
       KAFKA_CREATE_TOPICS: "test:3:3,response:3:3,request:3:3,offer:3:3"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  # docker-compose run postgres bash
+  # psql -h postgres -d mydbname -U root
+  postgres:
+    image: postgres:12.2
+    ports:
+     - "5432:5432"
+    environment:
+      POSTGRES_DB: mydbname
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+    volumes:
+     - ./cache/postgres:/var/lib/postgresql/data
+
+  # mkdir -p cache/pgadmin
+  # chown -R 5050:5050 cache/pgadmin
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+     - "8082:80"
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@root.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    volumes:
+      - ./cache/pgadmin:/var/lib/pgadmin
