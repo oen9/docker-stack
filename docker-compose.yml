@@ -40,6 +40,7 @@ services:
       KAFKA_CREATE_TOPICS: "test:3:3,response:3:3,request:3:3,offer:3:3"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./cache/kafka-tmp:/tmp/
 
   # docker-compose run postgres bash
   # psql -h postgres -d mydbname -U root
@@ -67,3 +68,15 @@ services:
       PGADMIN_DEFAULT_PASSWORD: secret
     volumes:
       - ./cache/pgadmin:/var/lib/pgadmin
+
+  # root // rootpassword
+  arangodb:
+    image: arangodb:latest
+    environment:
+      ARANGO_ROOT_PASSWORD: rootpassword
+      #ARANGO_NO_AUTH: 1
+    ports:
+      - 8529:8529
+    volumes:
+      - ./cache/arangodb_data_container:/var/lib/arangodb3
+      - ./cache/arangodb_apps_data_container:/var/lib/arangodb3-apps

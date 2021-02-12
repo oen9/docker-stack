@@ -36,3 +36,12 @@ Other starts:\
 ### into the docker
 `docker-compose run postgres bash`\
 `psql -h postgres -d mydbname -U root`
+
+## arangodb
+### start
+`docker-compose up -d arangodb`
+### web
+`http://localhost:8529`
+### into the docker
+`docker-compose run arangodb sh`\
+`arangosh --server.endpoint arangodb:8529`
