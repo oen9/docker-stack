@@ -45,3 +45,9 @@ Other starts:\
 ### into the docker
 `docker-compose run arangodb sh`\
 `arangosh --server.endpoint arangodb:8529`
+
+## couchbase
+### start
+`docker-compose up -d couchbase`
+### web
+`http://localhost:8091`

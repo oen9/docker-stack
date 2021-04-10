@@ -80,3 +80,11 @@ services:
     volumes:
       - ./cache/arangodb_data_container:/var/lib/arangodb3
       - ./cache/arangodb_apps_data_container:/var/lib/arangodb3-apps
+
+  couchbase:
+    image: couchbase:latest
+    ports:
+      - 8091-8094:8091-8094
+      - 11210:11210
+    volumes:
+      - ./cache/couchbase:/opt/couchbase/var
