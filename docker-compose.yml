@@ -42,7 +42,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./cache/kafka-tmp:/tmp/
 
-  # docker-compose run postgres bash
+  # docker compose run postgres bash
   # psql -h postgres -d mydbname -U root
   postgres:
     image: postgres:12.2
@@ -88,3 +88,62 @@ services:
       - 11210:11210
     volumes:
       - ./cache/couchbase:/opt/couchbase/var
+
+  # mkdir -p cache/elasticsearch
+  # chown -R 1000:1000 cache/elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ./cache/elasticsearch:/usr/share/elasticsearch/data
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+  # mkdir -p cache/elasticsearch6
+  # chown -R 1000:1000 cache/elasticsearch6
+  elasticsearch6:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.18
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ./cache/elasticsearch6:/usr/share/elasticsearch/data
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+  kibana:
+    depends_on:
+      - elasticsearch
+    image: docker.elastic.co/kibana/kibana:7.13.3
+    ports:
+      - 5601:5601
+    volumes:
+    - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
+
+  # docker compose run redis bash
+  # redis-cli -h 192.168.1.2 # local machine ip
+  redis:
+    image: redis:6.2.4
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - 6379:6379
+    volumes:
+      - ./cache/redis:/data
+
+  # docker compose run elasticsearch-dump bash
+  # mkdir -p cache/elasticsearch-dump/
+  elasticsearch-dump:
+    image: elasticdump/elasticsearch-dump:latest
+    volumes:
+      - ./cache/elasticsearch-dump:/data
+
+  # docker compose run kafkactl consume topic
+  # docker compose run --entrypoint /bin/bash kafkactl
+  kafkactl:
+    image: deviceinsight/kafkactl:v1.20.0
+    volumes:
+      - ~/.config/kafkactl/config.yml:/etc/kafkactl/config.yml
